@@ -134,18 +134,9 @@ def checkOld():
 			actualfilename=torrent.name[:-3]+"mp4"
 
 
-#			print convertprocess
-			#processid=os.spawnl(os.P_NOWAIT, "/usr/local/bin/ffmpeg",convertprocess)							
-#			pid = subprocess.Popen(convertprocess).pid
 	       	        cursor.execute("UPDATE log SET log_status=2 WHERE show_hash='"+torrent.hashString+"'")
 			pid = subprocess.Popen(['/usr/local/bin/ffmpeg', '-i', targetlocation, '-s', '480x320', '-b', '384k', '-vcodec', 'libx264', '-flags', '+loop+mv4', '-cmp', '256', '-partitions', '+parti4x4+parti8x8+partp4x4+partp8x8+partb8x8', '-subq', '7', '-trellis', '1', '-refs', '5', '-bf', '0', '-flags2', '+mixed_refs', '-coder', '0', '-me_range', '16', '-g', '250', '-keyint_min', '25', '-sc_threshold', '40', '-i_qfactor', '0.71', '-qmin', '10', '-qmax', '51', '-qdiff', '4', '-acodec', 'libfaac', convertedfolder+actualfilename]).pid
 			
-	#loop through torrents
-		#if status is 100%
-			#remove torrent
-			#move to finishing folder
-			#run the script for conversion and background it 	
-			#update database			
 if run==1:
 	checkNew()				
 	checkOld()
