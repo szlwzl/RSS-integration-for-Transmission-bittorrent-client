@@ -24,13 +24,14 @@ transmission_pass=""
 
 download=0
 #Where files are downloaded to initially
-downloaddir=""#must finish with a /
+downloaddir="/var/lib/transmission-daemon/downloads/"#This is the current default for debian - must finish with a /
 #Where the converted files shoud go to
 convertedfolder=""#must finish with a /
 #if testing is 1 then use a local rss file(saves hitting the provider)
 testing=0
 #Run =0 will clear up any old downloads - used for testing purposes only
 run=1
+rssfeed="" 
 
 #set logging
 try:
@@ -53,9 +54,9 @@ if run==0:
 def checkNew():
 	download=0
 	if testing==1:
-        	d = feedparser.parse(r"/home/simon/eztv.rss")
+        	d = feedparser.parse(r"/home/simon/localfile.rss")
 	else:
-	        d = feedparser.parse("http://ezrss.it/feed/")
+	        d = feedparser.parse(rssfeed)
 
         #check each show
         for item in d['items']:
