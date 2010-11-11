@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#define imports 
+#define imports
 import feedparser
 import MySQLdb
 import transmissionrpc
@@ -8,6 +8,7 @@ import sys
 import shutil
 import os
 import subprocess
+import smtplib
 
 #set variables
 dbhost=""
@@ -23,6 +24,7 @@ transmission_user=""
 transmission_pass=""
 
 download=0
+
 #Where files are downloaded to initially
 downloaddir="/var/lib/transmission-daemon/downloads/"#This is the current default for debian - must finish with a /
 #Where the converted files shoud go to
@@ -31,16 +33,27 @@ convertedfolder=""#must finish with a /
 testing=0
 #Run =0 will clear up any old downloads - used for testing purposes only
 run=1
-rssfeed="" 
+rssfeed=""
+FROMADDR = "VALID FROM ADDRESS"
+TOADDRS  = ["VALID TO ADDRESS"]
+smtpserver = "VALID MAIL SERVER"
+smtpport = 25
 
 #set logging
 try:
 	if sys.argv[1]=="debug":
-		LOG_FILENAME = 'example.log'
-		logging.getLogger('transmissionrpc').setLevel(logging.DEBUG)
-		logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+		debug=1
+	else:
+		debug=0
 except Exception:
 	debug=0	
+
+if debug==1:
+	LOG_FILENAME = '/var/log/example.log'
+	logging.getLogger('transmissionrpc').setLevel(logging.DEBUG)
+	logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+
+
 #setup transmission session
 
 if run==0:
@@ -54,7 +67,7 @@ if run==0:
 def checkNew():
 	download=0
 	if testing==1:
-        	d = feedparser.parse(r"/home/simon/localfile.rss")
+        	d = feedparser.parse(r"/home/simon/eztv.rss")
 	else:
 	        d = feedparser.parse(rssfeed)
 
@@ -132,11 +145,21 @@ def checkOld():
 			targetlocation=finishingfolder+torrent.name
 			shutil.move(completefile,targetlocation)
 			actualfilename=torrent.name[:-3]+"mp4"
-
-
 	       	        cursor.execute("UPDATE log SET log_status=2 WHERE show_hash='"+torrent.hashString+"'")
 			pid = subprocess.Popen(['/usr/local/bin/ffmpeg', '-i', targetlocation, '-s', '480x320', '-b', '384k', '-vcodec', 'libx264', '-flags', '+loop+mv4', '-cmp', '256', '-partitions', '+parti4x4+parti8x8+partp4x4+partp8x8+partb8x8', '-subq', '7', '-trellis', '1', '-refs', '5', '-bf', '0', '-flags2', '+mixed_refs', '-coder', '0', '-me_range', '16', '-g', '250', '-keyint_min', '25', '-sc_threshold', '40', '-i_qfactor', '0.71', '-qmin', '10', '-qmax', '51', '-qdiff', '4', '-acodec', 'libfaac', convertedfolder+actualfilename]).pid
-			
+			SUBJECT  = "File Downloaded "+torrent.name
+			msg = ("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" % (FROMADDR, ", ".join(TOADDRS), SUBJECT) )
+			msg += torrent.name+" completed download and is now on being converted\r\n"
+			server = smtplib.SMTP(smtpserver, smtpport)
+			if debug==1:	
+				server.set_debuglevel(1)
+			server.ehlo()
+			server.sendmail(FROMADDR, TOADDRS, msg)
+			server.quit()
+
 if run==1:
 	checkNew()				
 	checkOld()
+
+
+
