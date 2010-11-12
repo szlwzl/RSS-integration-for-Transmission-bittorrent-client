@@ -1,9 +1,14 @@
-Release 1
+_Release 1_
 Everything works ok but there are much better ways of doing it
 
-RoadMap
+_RoadMap_
+Init parameters into a config file to allow for easier commit to git - http://docs.python.org/library/configparser.html#ConfigParser.ConfigParser
+Processing of the description - this is a dictionary - no need for all the splits
+Error Catching
+Manual addition of torrents - no need to log them but still want to convert etc
 Twitter Integration - DM on download
 Choice of conversion - iphone/ipad/appleTV/android etc
-Storage of Data in something other than MySQL
-Init parameters into an XML file 
+Storage of Data in something other than MySQL - but what though?? Maybe a config file like above?
+GUI for adding/editing/deleting torrents http://pythoncard.sourceforge.net/index.html http://www.ferg.org/thinking_in_tkinter/
+
 
