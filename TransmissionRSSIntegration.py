@@ -10,7 +10,7 @@ import os
 import subprocess
 import smtplib
 
-#set variables
+#set variables - these all need to go into an init file
 dbhost=""
 dbname=""
 dbuser=""
