@@ -9,39 +9,48 @@ import shutil
 import os
 import subprocess
 import smtplib
+import ConfigParser
 
-#set variables - these all need to go into an init file
-dbhost=""
-dbname=""
-dbuser=""
-dbpass=""
-db = MySQLdb.connect(host=dbhost, user=dbuser, passwd=dbpass,db=dbname)
+config = ConfigParser.RawConfigParser()
+configfile=sys.argv[1]
+config.read(configfile)
+
+#set variables
+dbhost = config.get('DB', 'dbhost')
+dbname = config.get('DB', 'dbname')
+dbuser = config.get('DB', 'dbuser')
+dbpass = config.get('DB', 'dbpass')
 
 #set transmission stuphs
-transmission_client=""
-transmission_port=9092
-transmission_user=""
-transmission_pass=""
+transmission_client = config.get('transmission', 'transmission_client')
+transmission_port = config.getint('transmission', 'transmission_port')
+transmission_user = config.get('transmission', 'transmission_user')
+transmission_pass = config.get('transmission', 'transmission_pass')
 
-download=0
+#set filesystem stuphs
+downloaddir=config.get('filesystem','downloaddir')
+#Where the converted files should go to
+convertedfolder=config.get('filesystem','convertedfolder')
 
-#Where files are downloaded to initially
-downloaddir="/var/lib/transmission-daemon/downloads/"#This is the current default for debian - must finish with a /
-#Where the converted files shoud go to
-convertedfolder=""#must finish with a /
-#if testing is 1 then use a local rss file(saves hitting the provider)
-testing=0
-#Run =0 will clear up any old downloads - used for testing purposes only
-run=1
-rssfeed=""
-FROMADDR = "VALID FROM ADDRESS"
-TOADDRS  = ["VALID TO ADDRESS"]
-smtpserver = "VALID MAIL SERVER"
-smtpport = 25
+#set rss stuphs
+rssfeed=config.get('rss','rssfeed')
 
+#set notification
+FROMADDR = config.get('notification','FROMADDR')
+TOADDRS  = [config.get('notification','TOADDRS')]
+smtpserver =config.get('notification','smtpserver')
+smtpport = config.getint('notification','smtpport')
+
+#set the misc stuphs
+testing=config.getint('misc','testing')
+run=config.getint('misc','run')
+download=config.getint('misc','download')
+logfile=config.get('misc','logfile')
+
+db = MySQLdb.connect(host=dbhost, user=dbuser, passwd=dbpass,db=dbname)
 #set logging
 try:
-	if sys.argv[1]=="debug":
+	if sys.argv[2]=="debug":
 		debug=1
 	else:
 		debug=0
@@ -49,7 +58,7 @@ except Exception:
 	debug=0	
 
 if debug==1:
-	LOG_FILENAME = '/var/log/example.log'
+	LOG_FILENAME = logfile
 	logging.getLogger('transmissionrpc').setLevel(logging.DEBUG)
 	logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 

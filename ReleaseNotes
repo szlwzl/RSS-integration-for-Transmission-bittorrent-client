@@ -1,8 +1,11 @@
+_Release 2_
+DONE - Init parameters into a config file to allow for easier commit to git - http://docs.python.org/library/configparser.html#ConfigParser.ConfigParser
+
 _Release 1_
 Everything works ok but there are much better ways of doing it
 
+
 _RoadMap_
-Init parameters into a config file to allow for easier commit to git - http://docs.python.org/library/configparser.html#ConfigParser.ConfigParser
 Processing of the description - this is a dictionary - no need for all the splits
 Error Catching
 Manual addition of torrents - no need to log them but still want to convert etc
