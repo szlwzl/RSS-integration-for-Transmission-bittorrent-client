@@ -11,6 +11,17 @@ import subprocess
 import smtplib
 import ConfigParser
 
+#needs to be called with the config file as first parameter and optionally debug as second
+try:
+	if sys.argv[1]=="":
+		print "You need to enter the config file as the first parameter"
+		sys.exit()
+except Exception:
+	print "You need to enter the config file as the first parameter"
+	sys.exit()
+
+
+
 config = ConfigParser.RawConfigParser()
 configfile=sys.argv[1]
 config.read(configfile)
@@ -62,8 +73,6 @@ if debug==1:
 	logging.getLogger('transmissionrpc').setLevel(logging.DEBUG)
 	logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
-
-#setup transmission session
 
 if run==0:
 	tc = transmissionrpc.Client(transmission_client,port=transmission_port,user=transmission_user,password=transmission_pass)
