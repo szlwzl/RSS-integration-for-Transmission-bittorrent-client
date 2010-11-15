@@ -40,6 +40,7 @@ config.set('misc', 'run', 1)
 #sets our default for downloading
 config.set('misc','download',0)
 config.set('misc','logfile','/var/log/transmission-rss.log')
+config.set('misc','high_def',0)
 
 # Writing our configuration file to 'example.cfg'
 with open('Transmission-RSS.cfg', 'wb') as configfile:

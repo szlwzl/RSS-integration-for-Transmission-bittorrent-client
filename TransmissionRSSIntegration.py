@@ -57,6 +57,7 @@ testing=config.getint('misc','testing')
 run=config.getint('misc','run')
 download=config.getint('misc','download')
 logfile=config.get('misc','logfile')
+high_def=config.getint('misc','high_def')
 
 db = MySQLdb.connect(host=dbhost, user=dbuser, passwd=dbpass,db=dbname)
 #set logging
@@ -129,7 +130,10 @@ def checkNew():
                         result2 = cursor2.fetchall()
                         if number_of_results > 0:
                                 download=0
-		 	#is the torrent already added(check the api!)
+			# are we going to dl the hd or not
+			if high_def==0:
+				if item['link'].find("720p") != -1:
+					download=0
                         if download==1:
 				tc = transmissionrpc.Client(transmission_client,port=transmission_port,user=transmission_user,password=transmission_pass)
                                 #update the db to show we're dling it
@@ -167,7 +171,7 @@ def checkOld():
 			pid = subprocess.Popen(['/usr/local/bin/ffmpeg', '-i', targetlocation, '-s', '480x320', '-b', '384k', '-vcodec', 'libx264', '-flags', '+loop+mv4', '-cmp', '256', '-partitions', '+parti4x4+parti8x8+partp4x4+partp8x8+partb8x8', '-subq', '7', '-trellis', '1', '-refs', '5', '-bf', '0', '-flags2', '+mixed_refs', '-coder', '0', '-me_range', '16', '-g', '250', '-keyint_min', '25', '-sc_threshold', '40', '-i_qfactor', '0.71', '-qmin', '10', '-qmax', '51', '-qdiff', '4', '-acodec', 'libfaac', convertedfolder+actualfilename]).pid
 			SUBJECT  = "File Downloaded "+torrent.name
 			msg = ("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" % (FROMADDR, ", ".join(TOADDRS), SUBJECT) )
-			msg += torrent.name+" completed download and is now on being converted\r\n"
+			msg += torrent.name+" completed download and is now being converted\r\n"
 			server = smtplib.SMTP(smtpserver, smtpport)
 			if debug==1:	
 				server.set_debuglevel(1)

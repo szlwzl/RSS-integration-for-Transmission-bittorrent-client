@@ -1,9 +1,11 @@
+_Release 3_
+Selection of quality - remove 720p if not wanted and go for the HDTV ver	
+
 _Release 2_
 DONE - Init parameters into a config file to allow for easier commit to git - http://docs.python.org/library/configparser.html#ConfigParser.ConfigParser
 
 _Release 1_
 Everything works ok but there are much better ways of doing it
-
 
 _RoadMap_
 Processing of the description - this is a dictionary - no need for all the splits
@@ -13,5 +15,4 @@ Twitter Integration - DM on download
 Choice of conversion - iphone/ipad/appleTV/android etc
 Storage of Data in something other than MySQL - but what though?? Maybe a config file like above?
 GUI for adding/editing/deleting torrents http://pythoncard.sourceforge.net/index.html http://www.ferg.org/thinking_in_tkinter/
-
-
+Remove log every couple of days
